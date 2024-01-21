@@ -1,6 +1,5 @@
 from typing import overload
-import projection
-
+import projection as project
 PROJECTION_TYPES = {}
 
 class Vector3D:
@@ -30,8 +29,14 @@ class Vector2D:
     def to3d(self, depth: float = 0) -> Vector3D: return Vector3D(self.x, self.y, depth)
 
 class Poly:
-    def __init__(self, points = list[Vector3D]) -> None: ...
+    def __init__(self, points = list[Vector3D]) -> None: self.points = points
+    @overload
     def __add__(self, other: Poly) -> Poly: ...
+    @overload
+    def __add__(self, other: Vector3D) -> Poly: ...
+    def __add__(self, other) -> Poly: return Poly(self.points + [other]) if isinstance(Vector3D, other) else Poly(self.points + other.points)
+    @property
+    def points(self): ...
 
 class Camera:
     @property
